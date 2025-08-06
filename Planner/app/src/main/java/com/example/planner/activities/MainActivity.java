@@ -1,7 +1,8 @@
-package com.example.planner;
+package com.example.planner.activities;
 
 import android.os.Bundle;
 
+import com.example.planner.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
