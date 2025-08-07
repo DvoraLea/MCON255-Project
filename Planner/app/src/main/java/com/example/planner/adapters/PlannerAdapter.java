@@ -1,4 +1,4 @@
-package com.example.planner.adapters;
+package com.example.planner;
 
 
 import android.view.LayoutInflater;
@@ -8,9 +8,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.planner.R;
-import com.example.planner.models.Planner;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
