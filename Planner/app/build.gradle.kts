@@ -38,6 +38,7 @@ dependencies {
 
     implementation(libs.appcompat)
     implementation("com.google.code.gson:gson:2.13.0")
+    implementation(libs.recyclerview)
     implementation(libs.preference)
     implementation(libs.material)
     implementation(libs.constraintlayout)

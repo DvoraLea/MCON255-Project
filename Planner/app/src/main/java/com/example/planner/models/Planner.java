@@ -1,23 +1,33 @@
 package com.example.planner.models;
 
-
 import java.io.Serializable;
 import java.util.Date;
 
 public class Planner implements Serializable {
+    private String id;
     private String title;
     private String description;
     private Date dueDate;
     private boolean isCompleted;
+    private String notes;
 
-    public Planner(String title, String description, Date dueDate, boolean isCompleted) {
+    public Planner(String id, String title, String description, Date dueDate, boolean isCompleted) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.isCompleted = isCompleted;
+        this.notes = "";
     }
 
-    // Getters and Setters
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -33,6 +43,11 @@ public class Planner implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+    public Planner withNotes(String notes) {
+        this.notes = notes;
+        return this;
+    }
+
 
     public Date getDueDate() {
         return dueDate;
@@ -48,5 +63,13 @@ public class Planner implements Serializable {
 
     public void setCompleted(boolean completed) {
         isCompleted = completed;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

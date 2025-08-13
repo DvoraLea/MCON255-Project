@@ -20,18 +20,31 @@ import java.util.Locale;
 
 public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.PlannerViewHolder> {
 
-    private List<Planner> plannerList;
-    private OnEditClickListener editClickListener;
 
-    // Interface for edit click callback
+
+    // Clicks on the pencil (edit)
     public interface OnEditClickListener {
         void onEditClick(int position);
     }
 
-    public PlannerAdapter(List<Planner> plannerList, OnEditClickListener editClickListener) {
-        this.plannerList = plannerList != null ? plannerList : new ArrayList<>();
-        this.editClickListener = editClickListener;
+    // Clicks on the whole row -open details
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
 
+    private final List<Planner> plannerList;
+    private final OnEditClickListener editClickListener;
+    private OnItemClickListener itemClickListener;
+
+    public PlannerAdapter(List<Planner> plannerList, OnEditClickListener editClickListener, OnItemClickListener itemClickListener) {
+        this.plannerList = plannerList;
+        this.editClickListener = editClickListener;
+        this.itemClickListener = itemClickListener;
+    }
+
+    // Allow MainActivity to set row-tap listener
+    public void setOnItemClickListener(OnItemClickListener l) {
+        this.itemClickListener = l;
     }
 
     @NonNull
@@ -44,42 +57,24 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.PlannerV
 
     @Override
     public void onBindViewHolder(@NonNull PlannerViewHolder holder, int position) {
-        Planner planner = plannerList.get(position);
+        Planner task = plannerList.get(position);
 
-        holder.titleTextView.setText(planner.getTitle());
-        holder.descriptionTextView.setText(planner.getDescription());
+        holder.titleTextView.setText(task.getTitle());
+        holder.dueDateTextView.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(task.getDueDate()));
 
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-        holder.dueDateTextView.setText(sdf.format(planner.getDueDate()));
-
-        // Bind checkbox state
-        holder.checkBoxCompleted.setOnCheckedChangeListener(null); // reset listener before reuse
-        holder.checkBoxCompleted.setChecked(planner.isCompleted());
-
-        // Checkbox listener to remove completed task
-        holder.checkBoxCompleted.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                // Update model
-                planner.setCompleted(true);
-
-                // Remove the item from the list
-                plannerList.remove(position);
-
-                // Notify adapter about item removed
-                notifyItemRemoved(position);
-
-                // Optional: notify range changed to fix positions
-                notifyItemRangeChanged(position, plannerList.size());
-            }
-        });
-
-        // Edit button click listener
         holder.buttonEdit.setOnClickListener(v -> {
             if (editClickListener != null) {
                 editClickListener.onEditClick(holder.getAdapterPosition());
             }
         });
+
+        holder.itemView.setOnClickListener(v -> {
+            if (itemClickListener != null) {
+                itemClickListener.onItemClick(holder.getAdapterPosition());
+            }
+        });
     }
+
 
     @Override
     public int getItemCount() {
@@ -98,7 +93,6 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.PlannerV
             dueDateTextView = itemView.findViewById(R.id.textDueDate);
             checkBoxCompleted = itemView.findViewById(R.id.checkBoxCompleted);
             buttonEdit = itemView.findViewById(R.id.buttonEdit);
-
         }
     }
 }
