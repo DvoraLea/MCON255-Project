@@ -1,0 +1,53 @@
+Built application files
+*.apk
+*.ap_
+
+ART/Dalvik
+*.dex
+
+Java classes
+*.class
+
+Generated
+bin/
+gen/
+out/
+
+Gradle
+.gradle/
+build/
+**/build/
+
+Local config
+local.properties
+
+IDE
+*.iml
+.idea/
+**/.idea/
+
+Captures / native build
+captures/
+.externalNativeBuild/
+
+Google services
+google-services.json
+
+Misc
+.DS_Store
+*.log
+
+NDK
+obj/
+
+Crashlytics
+crashlytics.properties
+crashlytics-build.properties
+
+Generated launcher icons only 
+**/app/src/main/res/mipmap-/ic_launcher.png
+**/app/src/main/res/mipmap-/ic_launcher.webp
+**/app/src/main/res/values/ic_launcher_background.xml
+
+Archives
+*.zip
