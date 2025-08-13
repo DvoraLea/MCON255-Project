@@ -8,39 +8,55 @@
     android:layout_marginBottom="8dp"
     android:background="?attr/selectableItemBackground">
 
+    <CheckBox
+        android:id="@+id/checkBoxCompleted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="8dp" />
+
     <TextView
         android:id="@+id/textTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/task_title"
         android:textStyle="bold"
         android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@id/checkBoxCompleted"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toStartOf="@id/buttonEdit" />
 
     <TextView
         android:id="@+id/textDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/hint_description"
         android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@id/textTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/checkBoxCompleted"
+        app:layout_constraintEnd_toStartOf="@id/buttonEdit"
         android:layout_marginTop="4dp" />
 
     <TextView
         android:id="@+id/textDueDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/hint_due_date"
         android:textColor="#666"
         android:textSize="12sp"
         app:layout_constraintTop_toBottomOf="@id/textDescription"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/checkBoxCompleted"
+        app:layout_constraintEnd_toStartOf="@id/buttonEdit"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp" />
+
+    <ImageButton
+        android:id="@+id/buttonEdit"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:contentDescription="@string/edit_task"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/ic_menu_edit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

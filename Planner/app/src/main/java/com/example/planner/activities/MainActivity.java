@@ -27,7 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PlannerAdapter.OnEditClickListener {
 
     private ActivityMainBinding binding;
     private PlannerAdapter adapter;
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         // for now initialize to empty list
         plannerList = new ArrayList<>();
 
-        adapter = new PlannerAdapter(plannerList);
+        adapter = new PlannerAdapter(plannerList, this);
 
         binding.contentMain.plannerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.contentMain.plannerRecyclerView.setAdapter(adapter);
@@ -120,4 +120,52 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onEditClick(int position) {
+        Planner taskToEdit = plannerList.get(position);
+
+        // Inflate dialog layout same as add task but pre-fill with task info
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.dialog_add_task, null);
+
+        EditText editTitle = dialogView.findViewById(R.id.editTextTitle);
+        EditText editDescription = dialogView.findViewById(R.id.editTextDescription);
+        EditText editDueDate = dialogView.findViewById(R.id.editTextDueDate);
+
+        // Pre-fill with current values
+        editTitle.setText(taskToEdit.getTitle());
+        editDescription.setText(taskToEdit.getDescription());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        editDueDate.setText(sdf.format(taskToEdit.getDueDate()));
+
+        new AlertDialog.Builder(this)
+                .setTitle("Edit Task")
+                .setView(dialogView)
+                .setPositiveButton("Save", (dialog, which) -> {
+                    String newTitle = editTitle.getText().toString().trim();
+                    String newDesc = editDescription.getText().toString().trim();
+                    String newDueDateStr = editDueDate.getText().toString().trim();
+
+                    if (newTitle.isEmpty() || newDueDateStr.isEmpty()) {
+                        Snackbar.make(binding.getRoot(), "Title and Date required", Snackbar.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    try {
+                        Date newDueDate = sdf.parse(newDueDateStr);
+
+                        // Update task
+                        taskToEdit.setTitle(newTitle);
+                        taskToEdit.setDescription(newDesc);
+                        taskToEdit.setDueDate(newDueDate);
+
+                        adapter.notifyItemChanged(position);
+
+                    } catch (Exception e) {
+                        Snackbar.make(binding.getRoot(), "Invalid date format", Snackbar.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
 }

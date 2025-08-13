@@ -13,4 +13,5 @@
     <string name="pref_auto_save_summary">Automatically save tasks</string>
 
     <string name="about_app">PlanIt! is an easy-to-use Android planner app designed to help you stay organized and on top of your to-do list. Create tasks with detailed descriptions and due dates, edit them whenever you need, and mark tasks as completed to keep track of your progress. Whether it’s daily errands, work projects, or personal goals, PlanIt! makes task management simple, fun, and efficient.</string>
+    <string name="edit_task">Edit</string>
 </resources>
