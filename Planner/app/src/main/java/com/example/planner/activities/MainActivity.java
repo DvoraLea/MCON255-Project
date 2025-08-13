@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.planner.R;
 import com.example.planner.adapters.PlannerAdapter;
 import com.example.planner.databinding.ActivityMainBinding;
+import com.example.planner.databinding.ContentMainBinding;
 import com.example.planner.models.Planner;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -38,15 +40,19 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // test data -DELETE This later
-        plannerList = new ArrayList<>();
-        plannerList.add(new Planner("Finish Homework", "Chapter 5 Exercises", new Date(), false));
-        plannerList.add(new Planner("Buy Groceries", "Eggs, Milk, Bread", new Date(), false));
+        // set up toolbar
+        setSupportActionBar(binding.includeToolbar.toolbar);
 
+        // update to call plannerList from preferences if it's not empty
+        // plannerList = loadPlannerList(); // returns saved list OR empty list
+
+        // for now initialize to empty list
+        plannerList = new ArrayList<>();
 
         adapter = new PlannerAdapter(plannerList);
-        binding.plannerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        binding.plannerRecyclerView.setAdapter(adapter);
+
+        binding.contentMain.plannerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.contentMain.plannerRecyclerView.setAdapter(adapter);
 
         // FAB
         binding.fabAddTask.setOnClickListener(view -> {
@@ -105,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.action_about) {
             new AlertDialog.Builder(this)
                     .setTitle(getString(R.string.app_name))
-                    .setMessage("Semester Planner\nVersion 1.0\nM.")
+                    .setMessage(getString(R.string.about_app))
                     .setPositiveButton("OK", null)
                     .show();
             return true;

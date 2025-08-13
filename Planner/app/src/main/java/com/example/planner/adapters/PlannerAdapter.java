@@ -13,6 +13,7 @@ import com.example.planner.R;
 import com.example.planner.models.Planner;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,7 +22,8 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.PlannerV
     private List<Planner> plannerList;
 
     public PlannerAdapter(List<Planner> plannerList) {
-        this.plannerList = plannerList;
+
+        this.plannerList = plannerList != null ? plannerList : new ArrayList<>();
     }
 
     @NonNull
