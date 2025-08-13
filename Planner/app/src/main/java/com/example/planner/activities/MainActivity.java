@@ -98,9 +98,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
         if (id == R.id.action_settings) {
+            Snackbar.make(binding.getRoot(), "Settings  --", Snackbar.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.action_about) {
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.app_name))
+                    .setMessage("Semester Planner\nVersion 1.0\nM.")
+                    .setPositiveButton("OK", null)
+                    .show();
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
+
 }

@@ -1,4 +1,4 @@
-package com.example.planner;
+package com.example.planner.models;
 
 
 import java.io.Serializable;
