@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextAppearance.MyApp.Body" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/handwriting_font_family</item>
+    </style>
+</resources>
