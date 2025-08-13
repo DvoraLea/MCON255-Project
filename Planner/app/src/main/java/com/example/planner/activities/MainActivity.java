@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // test data -DELETE This latre
+        // test data -DELETE This later
         plannerList = new ArrayList<>();
         plannerList.add(new Planner("Finish Homework", "Chapter 5 Exercises", new Date(), false));
         plannerList.add(new Planner("Buy Groceries", "Eggs, Milk, Bread", new Date(), false));
