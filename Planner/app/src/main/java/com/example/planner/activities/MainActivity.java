@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -21,17 +22,17 @@ import com.google.android.material.snackbar.Snackbar;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity implements
-        PlannerAdapter.OnEditClickListener,
-        PlannerAdapter.OnItemClickListener {
+public class MainActivity extends AppCompatActivity
+        implements PlannerAdapter.OnEditClickListener, PlannerAdapter.OnItemClickListener {
+
+    private static final int REQ_TASK_DETAILS = 1001;
 
     private ActivityMainBinding binding;
     private PlannerAdapter adapter;
-    private List<Planner> plannerList;
+    private ArrayList<Planner> plannerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,16 +41,17 @@ public class MainActivity extends AppCompatActivity implements
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Toolbar
         setSupportActionBar(binding.includeToolbar.toolbar);
 
+        //  adapter
         plannerList = new ArrayList<>();
-
-        adapter = new PlannerAdapter(plannerList, this, this);
+        adapter = new PlannerAdapter(plannerList, /* edit icon */ this, /* row tap */ this);
 
         binding.contentMain.plannerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.contentMain.plannerRecyclerView.setAdapter(adapter);
 
-        // Floating Action Button to add task
+        //Add a new task dialog
         binding.fabAddTask.setOnClickListener(view -> {
             LayoutInflater inflater = LayoutInflater.from(this);
             View dialogView = inflater.inflate(R.layout.dialog_add_task, null);
@@ -75,12 +77,18 @@ public class MainActivity extends AppCompatActivity implements
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                             Date dueDate = sdf.parse(dueDateStr);
 
-                            String id = UUID.randomUUID().toString();
-                            Planner newTask = new Planner(id, title, description, dueDate, false);
+                            // IMPORTANT: your Planner constructor takes 5 args: (id, title, desc, date, completed)
+                            Planner newTask = new Planner(
+                                    UUID.randomUUID().toString(),
+                                    title,
+                                    description,
+                                    dueDate,
+                                    false
+                            );
                             plannerList.add(newTask);
                             adapter.notifyItemInserted(plannerList.size() - 1);
                         } catch (Exception e) {
-                            Snackbar.make(binding.getRoot(), "Invalid date format", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(binding.getRoot(), "Invalid date format (use yyyy-MM-dd)", Snackbar.LENGTH_SHORT).show();
                         }
                     })
                     .setNegativeButton("Cancel", null)
@@ -88,12 +96,14 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
+    // Toolbar menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
+    // Toolbar actions
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -109,26 +119,26 @@ public class MainActivity extends AppCompatActivity implements
                     .show();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
+    // Edit (pencil)
     @Override
     public void onEditClick(int position) {
+        if (position < 0 || position >= plannerList.size()) return;
+
         Planner taskToEdit = plannerList.get(position);
 
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View dialogView = inflater.inflate(R.layout.dialog_add_task, null);
 
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_task, null);
         EditText editTitle = dialogView.findViewById(R.id.editTextTitle);
         EditText editDescription = dialogView.findViewById(R.id.editTextDescription);
         EditText editDueDate = dialogView.findViewById(R.id.editTextDueDate);
 
         editTitle.setText(taskToEdit.getTitle());
         editDescription.setText(taskToEdit.getDescription());
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        editDueDate.setText(sdf.format(taskToEdit.getDueDate()));
+        editDueDate.setText(taskToEdit.getDueDate() != null ? sdf.format(taskToEdit.getDueDate()) : "");
 
         new AlertDialog.Builder(this)
                 .setTitle("Edit Task")
@@ -145,29 +155,68 @@ public class MainActivity extends AppCompatActivity implements
 
                     try {
                         Date newDueDate = sdf.parse(newDueDateStr);
-
                         taskToEdit.setTitle(newTitle);
                         taskToEdit.setDescription(newDesc);
                         taskToEdit.setDueDate(newDueDate);
-
                         adapter.notifyItemChanged(position);
                     } catch (Exception e) {
-                        Snackbar.make(binding.getRoot(), "Invalid date format", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(binding.getRoot(), "Invalid date format (use yyyy-MM-dd)", Snackbar.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
+    // open details activity
     @Override
-    public void onItemClick(int position) {
-        Planner clickedTask = plannerList.get(position);
+    public void onItemClick(Planner planner) {
+        if (planner == null) return;
 
         Intent intent = new Intent(this, TaskDetailsActivity.class);
-        intent.putExtra("task_title", clickedTask.getTitle());
-        intent.putExtra("task_description", clickedTask.getDescription());
-        intent.putExtra("task_due_date", clickedTask.getDueDate().getTime());
-
-        startActivity(intent);
+        intent.putExtra("extra_task", planner);
+        intent.putExtra("task_id", planner.getId());
+//TODO
+        startActivityForResult(intent, REQ_TASK_DETAILS);
     }
+
+    //  updates back
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQ_TASK_DETAILS && resultCode == RESULT_OK && data != null) {
+
+
+            Planner updated = (Planner) data.getSerializableExtra(TaskDetailsActivity.EXTRA_TASK);
+            if (updated != null && updated.getId() != null) {
+                for (int i = 0; i < plannerList.size(); i++) {
+                    if (updated.getId().equals(plannerList.get(i).getId())) {
+                        plannerList.set(i, updated);
+                        adapter.notifyItemChanged(i);
+                        return;
+                    }
+                }
+            }
+
+
+            String id = data.getStringExtra("task_id");
+            String title = data.getStringExtra("updated_title");
+            String desc = data.getStringExtra("updated_description");
+            long dueDateMillis = data.getLongExtra("updated_due_date", -1);
+
+            if (id != null) {
+                for (int i = 0; i < plannerList.size(); i++) {
+                    Planner p = plannerList.get(i);
+                    if (id.equals(p.getId())) {
+                        if (title != null) p.setTitle(title);
+                        if (desc != null) p.setDescription(desc);
+                        if (dueDateMillis > 0) p.setDueDate(new java.util.Date(dueDateMillis));
+                        adapter.notifyItemChanged(i);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
 }

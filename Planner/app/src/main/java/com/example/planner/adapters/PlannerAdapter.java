@@ -14,37 +14,31 @@ import com.example.planner.R;
 import com.example.planner.models.Planner;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.PlannerViewHolder> {
 
-
-
-    // Clicks on the pencil (edit)
+    // the pencil (edit)
     public interface OnEditClickListener {
         void onEditClick(int position);
     }
 
-    // Clicks on the whole row -open details
+    // open details
     public interface OnItemClickListener {
-        void onItemClick(int position);
+        void onItemClick(Planner planner);
     }
 
     private final List<Planner> plannerList;
     private final OnEditClickListener editClickListener;
-    private OnItemClickListener itemClickListener;
+    private final OnItemClickListener itemClickListener;
 
-    public PlannerAdapter(List<Planner> plannerList, OnEditClickListener editClickListener, OnItemClickListener itemClickListener) {
+    public PlannerAdapter(List<Planner> plannerList,
+                          OnEditClickListener editClickListener,
+                          OnItemClickListener itemClickListener) {
         this.plannerList = plannerList;
         this.editClickListener = editClickListener;
         this.itemClickListener = itemClickListener;
-    }
-
-    // Allow MainActivity to set row-tap listener
-    public void setOnItemClickListener(OnItemClickListener l) {
-        this.itemClickListener = l;
     }
 
     @NonNull
@@ -60,7 +54,9 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.PlannerV
         Planner task = plannerList.get(position);
 
         holder.titleTextView.setText(task.getTitle());
+        holder.descriptionTextView.setText(task.getDescription());
         holder.dueDateTextView.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(task.getDueDate()));
+        holder.checkBoxCompleted.setChecked(task.isCompleted());
 
         holder.buttonEdit.setOnClickListener(v -> {
             if (editClickListener != null) {
@@ -70,11 +66,10 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.PlannerV
 
         holder.itemView.setOnClickListener(v -> {
             if (itemClickListener != null) {
-                itemClickListener.onItemClick(holder.getAdapterPosition());
+                itemClickListener.onItemClick(plannerList.get(position));
             }
         });
     }
-
 
     @Override
     public int getItemCount() {
@@ -96,3 +91,4 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.PlannerV
         }
     }
 }
+
