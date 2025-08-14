@@ -1,106 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollView"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_marginTop="?attr/actionBarSize"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/editTextTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Title"
-            android:textSize="18sp"
-            android:inputType="textPersonName" />
-
-        <EditText
-            android:id="@+id/editTextDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Description"
-            android:textSize="16sp"
-            android:inputType="textMultiLine"
-            android:minLines="3" />
-
-
-        <TextView
-            android:id="@+id/detailDueDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Due Date"
-            android:textSize="16sp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp" />
-
-
-        <EditText
-            android:id="@+id/etNotes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Notes"
-            android:minLines="4"
-            android:inputType="textMultiLine"
-            android:paddingTop="8dp" />
-
-
-        <CheckBox
-            android:id="@+id/detailCompletedCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Completed" />
-
-
-        <TextView
-            android:id="@+id/subtasksHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Subtasks"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:paddingTop="16dp"
-            android:paddingBottom="8dp" />
-
+        android:layout_height="match_parent"
+        android:layout_marginTop="72dp"
+        android:padding="16dp">
 
         <LinearLayout
-            android:id="@+id/addSubtaskRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <EditText
-                android:id="@+id/editTextNewSubtask"
-                android:layout_width="0dp"
+                android:id="@+id/editTextTitle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Add subtask..." />
+                android:hint="Title"
+                android:inputType="textPersonName"
+                android:textSize="18sp" />
 
-            <ImageButton
-                android:id="@+id/buttonAddSubtask"
+            <EditText
+                android:id="@+id/editTextDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Description"
+                android:textSize="16sp"
+                android:inputType="textMultiLine"
+                android:minLines="3" />
+
+
+            <TextView
+                android:id="@+id/detailDueDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Due Date"
+                android:textSize="16sp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp" />
+
+
+            <EditText
+                android:id="@+id/etNotes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Notes"
+                android:minLines="4"
+                android:inputType="textMultiLine"
+                android:paddingTop="8dp" />
+
+
+            <CheckBox
+                android:id="@+id/detailCompletedCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="Add subtask"
-                android:src="@android:drawable/ic_input_add" />
+                android:text="Completed" />
+
+
+            <TextView
+                android:id="@+id/subtasksHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Subtasks"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp" />
+
+
+            <LinearLayout
+                android:id="@+id/addSubtaskRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/editTextNewSubtask"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Add subtask..." />
+
+                <ImageButton
+                    android:id="@+id/buttonAddSubtask"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="Add subtask"
+                    android:src="@android:drawable/ic_input_add" />
+            </LinearLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/subtaskRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never" />
+
+
+            <Button
+                android:id="@+id/buttonSaveNotes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save"
+                android:layout_marginTop="16dp" />
+
         </LinearLayout>
+    </ScrollView>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:contentDescription="Back"
+        android:src="@drawable/outline_arrow_back_24"
+        app:layout_anchorGravity="top|start" />
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/subtaskRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:overScrollMode="never" />
-
-
-        <Button
-            android:id="@+id/buttonSaveNotes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Save"
-            android:layout_marginTop="16dp" />
-
-    </LinearLayout>
-</ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

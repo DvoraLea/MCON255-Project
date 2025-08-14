@@ -14,7 +14,7 @@ public class Subtask implements Serializable {
         this.done = false;
     }
 
-    // constructo
+    // constructor
     public Subtask(String id, String title, boolean done) {
         this.id = id;
         this.title = title;

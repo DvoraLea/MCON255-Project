@@ -17,6 +17,7 @@ import com.example.planner.R;
 import com.example.planner.adapters.SubtaskAdapter;
 import com.example.planner.models.Planner;
 import com.example.planner.models.Subtask;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -47,6 +48,8 @@ public class TaskDetailsActivity extends AppCompatActivity {
     // Save
     private Button saveButton;
 
+    // Back to MainActivity
+    private FloatingActionButton fabBack;
 
     private final Calendar calendar = Calendar.getInstance();
     private final SimpleDateFormat dueSdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
@@ -68,6 +71,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
         buttonAddSubtask    = findViewById(R.id.buttonAddSubtask);
 
         saveButton          = findViewById(R.id.buttonSaveNotes);
+        fabBack             = findViewById(R.id.fabBack);
 
         //Load task from intent
         task = (Planner) getIntent().getSerializableExtra(EXTRA_TASK);
@@ -132,6 +136,11 @@ public class TaskDetailsActivity extends AppCompatActivity {
                     base.get(Calendar.MONTH),
                     base.get(Calendar.DAY_OF_MONTH)
             ).show();
+        });
+
+        // Use back arrow to return to MainActivity
+        fabBack.setOnClickListener(v -> {
+            finish();
         });
 
         //Save and return to MainActivity
