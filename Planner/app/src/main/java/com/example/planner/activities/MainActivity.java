@@ -27,7 +27,7 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity
         implements PlannerAdapter.OnEditClickListener, PlannerAdapter.OnItemClickListener {
-
+//
     private static final int REQ_TASK_DETAILS = 1001;
 
     private ActivityMainBinding binding;
