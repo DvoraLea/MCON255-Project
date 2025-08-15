@@ -191,21 +191,45 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intent, REQ_TASK_DETAILS);
     }
 
-    //  updates back
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQ_TASK_DETAILS && resultCode == RESULT_OK && data != null) {
 
+            //
+            if (requestCode == REQ_TASK_DETAILS && resultCode == RESULT_OK && data != null) {
+                // if you return the whole Planner object
+                Planner updated = (Planner) data.getSerializableExtra(TaskDetailsActivity.EXTRA_TASK);
+                if (updated != null && updated.getId() != null) {
+                    for (int i = 0; i < plannerList.size(); i++) {
+                        if (updated.getId().equals(plannerList.get(i).getId())) {
+                            if (updated.isCompleted()) { // uses your model's isCompleted()
+                                plannerList.remove(i);
+                                adapter.notifyItemRemoved(i);
+                            } else {
+                                plannerList.set(i, updated);
+                                adapter.notifyItemChanged(i);
+                            }
+                            return;
+                        }
+                    }
+                }
 
-            Planner updated = (Planner) data.getSerializableExtra(TaskDetailsActivity.EXTRA_TASK);
-            if (updated != null && updated.getId() != null) {
-                for (int i = 0; i < plannerList.size(); i++) {
-                    if (updated.getId().equals(plannerList.get(i).getId())) {
-                        plannerList.set(i, updated);
-                        adapter.notifyItemChanged(i);
-                        return;
+                String id = data.getStringExtra("task_id");
+                boolean completed = data.getBooleanExtra("completed", false);
+                if (id != null) {
+                    for (int i = 0; i < plannerList.size(); i++) {
+                        if (id.equals(plannerList.get(i).getId())) {
+                            if (completed) {
+                                plannerList.remove(i);
+                                adapter.notifyItemRemoved(i);
+                            } else {
+                                // update other fields here if you pass them back
+                                adapter.notifyItemChanged(i);
+                            }
+                            return;
+                        }
                     }
                 }
             }
@@ -230,5 +254,4 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-
 }

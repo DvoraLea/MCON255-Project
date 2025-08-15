@@ -55,21 +55,45 @@ public class PlannerAdapter extends RecyclerView.Adapter<PlannerAdapter.PlannerV
 
         holder.titleTextView.setText(task.getTitle());
         holder.descriptionTextView.setText(task.getDescription());
-        holder.dueDateTextView.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(task.getDueDate()));
+        holder.dueDateTextView.setText(
+                new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+                        .format(task.getDueDate())
+        );
+
+        holder.checkBoxCompleted.setOnCheckedChangeListener(null);
         holder.checkBoxCompleted.setChecked(task.isCompleted());
+
+        // Remove the task when checked
+        holder.checkBoxCompleted.setOnCheckedChangeListener((btn, isChecked) -> {
+            task.setCompleted(isChecked);
+            if (isChecked) {
+                int pos = holder.getAdapterPosition();
+                if (pos != RecyclerView.NO_POSITION) {
+                    plannerList.remove(pos);
+                    notifyItemRemoved(pos);
+                }
+            }
+        });
 
         holder.buttonEdit.setOnClickListener(v -> {
             if (editClickListener != null) {
-                editClickListener.onEditClick(holder.getAdapterPosition());
+                int pos = holder.getAdapterPosition();
+                if (pos != RecyclerView.NO_POSITION) {
+                    editClickListener.onEditClick(pos);
+                }
             }
         });
 
         holder.itemView.setOnClickListener(v -> {
             if (itemClickListener != null) {
-                itemClickListener.onItemClick(plannerList.get(position));
+                int pos = holder.getAdapterPosition();
+                if (pos != RecyclerView.NO_POSITION) {
+                    itemClickListener.onItemClick(plannerList.get(pos));
+                }
             }
         });
     }
+
 
     @Override
     public int getItemCount() {

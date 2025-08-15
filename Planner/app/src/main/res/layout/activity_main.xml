@@ -18,7 +18,6 @@
             layout="@layout/main_include_toolbar" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Make a concrete child container we can anchor to -->
     <FrameLayout android:id="@+id/content_container" android:layout_width="match_parent" android:layout_height="match_parent" app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <include
@@ -31,7 +30,7 @@
         android:id="@+id/fabAddTask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Add Task"
+        android:contentDescription="@string/add_task"
         android:src="@android:drawable/ic_input_add"
         android:layout_margin="16dp"
         android:layout_gravity="bottom|end" />
