@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,6 +36,12 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<Planner> plannerList;
 
     @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("planner_list", new ArrayList<>(plannerList));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -44,9 +51,13 @@ public class MainActivity extends AppCompatActivity
         // Toolbar
         setSupportActionBar(binding.includeToolbar.toolbar);
 
-        //  adapter
-        plannerList = new ArrayList<>();
-        adapter = new PlannerAdapter(plannerList, /* edit icon */ this, /* row tap */ this);
+        //  adapter - call from savedInstanceState or otherwise create empty one
+        if (savedInstanceState != null) {
+            plannerList = (ArrayList<Planner>) savedInstanceState.getSerializable("planner_list");
+        } else {
+            plannerList = new ArrayList<>(); // or load from persistent storage
+        }
+        adapter = new PlannerAdapter(plannerList, this, this);
 
         binding.contentMain.plannerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.contentMain.plannerRecyclerView.setAdapter(adapter);
@@ -175,7 +186,8 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, TaskDetailsActivity.class);
         intent.putExtra("extra_task", planner);
         intent.putExtra("task_id", planner.getId());
-//TODO
+
+        //TODO
         startActivityForResult(intent, REQ_TASK_DETAILS);
     }
 
