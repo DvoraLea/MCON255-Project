@@ -2,6 +2,7 @@ package com.example.planner.activities;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,7 +20,10 @@ import com.example.planner.adapters.PlannerAdapter;
 import com.example.planner.databinding.ActivityMainBinding;
 import com.example.planner.models.Planner;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,6 +38,23 @@ public class MainActivity extends AppCompatActivity
     private ActivityMainBinding binding;
     private PlannerAdapter adapter;
     private ArrayList<Planner> plannerList;
+
+    // Preference boolean; indicates if autosave is currently enabled/disabled
+    private boolean mPrefUseAutoSave;
+
+    // Name for/of Preference file on device or emulator
+    private final String mKeyPrefsName = "PREFS";
+
+    // Preference Key
+    private String mKeyAutoSave = "AUTO_SAVE";
+
+    private void restoreAppSettingsFromPrefs() {
+        // Since this is for reading only, no editor is needed unlike in saveRestoreState
+        SharedPreferences preferences = getSharedPreferences(mKeyPrefsName, MODE_PRIVATE);
+
+        // restore AutoSave preference value
+        mPrefUseAutoSave = preferences.getBoolean(mKeyAutoSave, true);
+    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -51,11 +72,23 @@ public class MainActivity extends AppCompatActivity
         // Toolbar
         setSupportActionBar(binding.includeToolbar.toolbar);
 
-        //  adapter - call from savedInstanceState or otherwise create empty one
+        restoreAppSettingsFromPrefs();
+
+        //  call plannerList from savedInstanceState if there is
         if (savedInstanceState != null) {
             plannerList = (ArrayList<Planner>) savedInstanceState.getSerializable("planner_list");
-        } else {
-            plannerList = new ArrayList<>(); // or load from persistent storage
+        } else if (mPrefUseAutoSave) { // call from storage
+            SharedPreferences preferences = getSharedPreferences(mKeyPrefsName, MODE_PRIVATE);
+            String json = preferences.getString("saved_planner_list", null);
+            if (json != null) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<ArrayList<Planner>>() {}.getType();
+                plannerList = gson.fromJson(json, type);
+            }
+        }
+        // if plannerList has not been set yet set to empty list
+        if (plannerList == null) {
+            plannerList = new ArrayList<>();
         }
         adapter = new PlannerAdapter(plannerList, this, this);
 
@@ -111,6 +144,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        // Set the AutoSave checkbox state from preferences
+        MenuItem autoSaveItem = menu.findItem(R.id.pref_auto_save);
+        autoSaveItem.setChecked(mPrefUseAutoSave); // sync the UI with the saved value
+
         return true;
     }
 
@@ -119,8 +157,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            Snackbar.make(binding.getRoot(), "Settings --", Snackbar.LENGTH_SHORT).show();
+        if (id == R.id.pref_auto_save) {
+            toggleMenuItem(item);
+            mPrefUseAutoSave = item.isChecked();
             return true;
         } else if (id == R.id.action_about) {
             new AlertDialog.Builder(this)
@@ -131,6 +170,10 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void toggleMenuItem(MenuItem item) {
+        item.setChecked(!item.isChecked());
     }
 
     // Edit (pencil)
@@ -253,5 +296,45 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        saveToSharedPref();
+        super.onStop();
+    }
+
+    private void saveToSharedPref() {
+        // Create a SP reference to the prefs file on the device whose name matches mKeyPrefsName
+        // If the file on the device does not yet exist, then it will be created
+        SharedPreferences preferences = getSharedPreferences(mKeyPrefsName, MODE_PRIVATE);
+
+        // Create an Editor object to write changes to the preferences object above
+        SharedPreferences.Editor editor = preferences.edit();
+
+        // clear whatever was set last time
+        editor.clear();
+
+        // save the settings (Show Errors and Use AutoSave)
+        saveSettingsToSharedPrefs(editor);
+
+        // if autoSave is on then save the board
+        saveListToSharedPrefsIfAutoSaveIsOn(editor);
+
+        // apply the changes to the XML file in the device's storage
+        editor.apply();
+    }
+
+    private void saveListToSharedPrefsIfAutoSaveIsOn(SharedPreferences.Editor editor) {
+        if (mPrefUseAutoSave) {
+            Gson gson = new Gson();
+            String json = gson.toJson(plannerList);
+            editor.putString("saved_planner_list", json);
+        }
+    }
+
+    private void saveSettingsToSharedPrefs(SharedPreferences.Editor editor) {
+        // save "autoSave" preference
+        editor.putBoolean(mKeyAutoSave, mPrefUseAutoSave);
     }
 }
