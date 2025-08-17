@@ -63,7 +63,6 @@ public class TaskDetailsActivity extends AppCompatActivity {
         titleEditText       = findViewById(R.id.editTextTitle);
         descriptionEditText = findViewById(R.id.editTextDescription);
         tvDueDate           = findViewById(R.id.detailDueDate);
-        completedCheckBox   = findViewById(R.id.detailCompletedCheckBox);
         editTextNotes       = findViewById(R.id.etNotes);
 
         subtaskRecyclerView = findViewById(R.id.subtaskRecyclerView);

@@ -5,105 +5,119 @@
     android:id="@+id/detail_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="?attr/actionBarSize">
+    android:padding="16dp">
 
     <ScrollView
         android:id="@+id/scrollViewBody"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="72dp"
-        android:padding="16dp">
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:divider="?android:attr/dividerVertical"
+            android:showDividers="middle"
+            android:paddingTop="72dp">
 
-            <EditText
-                android:id="@+id/editTextTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Title"
-                android:inputType="textPersonName"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/editTextDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Description"
-                android:textSize="16sp"
-                android:inputType="textMultiLine"
-                android:minLines="3" />
-
-            <TextView
-                android:id="@+id/detailDueDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Due Date"
-                android:textSize="16sp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp" />
-
-            <EditText
-                android:id="@+id/etNotes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Notes"
-                android:minLines="4"
-                android:inputType="textMultiLine"
-                android:paddingTop="8dp" />
-
-            <CheckBox
-                android:id="@+id/detailCompletedCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Completed" />
-
-            <TextView
-                android:id="@+id/subtasksHeader"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Subtasks"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp" />
-
+            <!-- Left Column -->
             <LinearLayout
-                android:id="@+id/addSubtaskRow"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingEnd="8dp">
 
                 <EditText
-                    android:id="@+id/editTextNewSubtask"
-                    android:layout_width="0dp"
+                    android:id="@+id/editTextTitle"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="Add subtask..." />
+                    android:hint="Title"
+                    android:inputType="textPersonName"
+                    android:textSize="18sp" />
 
-                <ImageButton
-                    android:id="@+id/buttonAddSubtask"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/editTextDescription"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:contentDescription="Add subtask"
-                    android:src="@android:drawable/ic_input_add" />
+                    android:hint="Description"
+                    android:textSize="16sp"
+                    android:inputType="textMultiLine"
+                    android:minLines="3" />
+
+                <TextView
+                    android:id="@+id/detailDueDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Due Date"
+                    android:textSize="16sp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/etNotes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Notes"
+                    android:minLines="4"
+                    android:inputType="textMultiLine"
+                    android:paddingTop="8dp" />
             </LinearLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/subtaskRecyclerView"
-                android:layout_width="match_parent"
+            <!-- Right Column (Subtasks) -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:overScrollMode="never" />
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingStart="8dp">
 
-            <Button
-                android:id="@+id/buttonSaveNotes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Save"
-                android:layout_marginTop="16dp" />
+                <TextView
+                    android:id="@+id/subtasksHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Subtasks"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp" />
 
+                <LinearLayout
+                    android:id="@+id/addSubtaskRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/editTextNewSubtask"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Add subtask..." />
+
+                    <ImageButton
+                        android:id="@+id/buttonAddSubtask"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="Add subtask"
+                        android:src="@android:drawable/ic_input_add" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/subtaskRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:overScrollMode="never" />
+
+                <Button
+                    android:id="@+id/buttonSaveNotes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Save"
+                    android:layout_marginTop="16dp" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

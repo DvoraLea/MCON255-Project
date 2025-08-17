@@ -3,16 +3,19 @@ package com.example.planner.activities;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.planner.R;
@@ -92,7 +95,18 @@ public class MainActivity extends AppCompatActivity
         }
         adapter = new PlannerAdapter(plannerList, this, this);
 
-        binding.contentMain.plannerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // Detect orientation
+        int orientation = getResources().getConfiguration().orientation;
+
+        // set layout of task list to two columns when landscape is used
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // Use 2-column grid in landscape
+            binding.contentMain.plannerRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        } else {
+            // Use standard vertical list in portrait
+            binding.contentMain.plannerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        }
+
         binding.contentMain.plannerRecyclerView.setAdapter(adapter);
 
         //Add a new task dialog
@@ -104,10 +118,10 @@ public class MainActivity extends AppCompatActivity
             EditText editDescription = dialogView.findViewById(R.id.editTextDescription);
             EditText editDueDate = dialogView.findViewById(R.id.editTextDueDate);
 
-            new AlertDialog.Builder(this)
+            AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("Add New Task")
                     .setView(dialogView)
-                    .setPositiveButton("Add", (dialog, which) -> {
+                    .setPositiveButton("Add", (dialogInterface, which) -> {
                         String title = editTitle.getText().toString().trim();
                         String description = editDescription.getText().toString().trim();
                         String dueDateStr = editDueDate.getText().toString().trim();
@@ -136,7 +150,15 @@ public class MainActivity extends AppCompatActivity
                         }
                     })
                     .setNegativeButton("Cancel", null)
-                    .show();
+                    .create();
+
+            dialog.show();
+
+            // Adjust size based on orientation
+            int width = (int)(getResources().getDisplayMetrics().widthPixels * 0.9); // 90% of screen width
+            int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+            dialog.getWindow().setLayout(width, height);
         });
     }
 

@@ -57,14 +57,6 @@
                 android:inputType="textMultiLine"
                 android:paddingTop="8dp" />
 
-
-            <CheckBox
-                android:id="@+id/detailCompletedCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Completed" />
-
-
             <TextView
                 android:id="@+id/subtasksHeader"
                 android:layout_width="match_parent"
